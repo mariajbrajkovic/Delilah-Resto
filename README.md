@@ -13,7 +13,7 @@ Requirements for deploying this project:
 - Install all dependences with: npm install
 - Run the server: npm run main.js
 - Set: 
-DBHOST = <database host>
+DBHOST = database host
   
 DBPORT = <database port>
   
