@@ -1,0 +1,549 @@
+---
+swagger: '2.0'
+info:
+  description: This is a simple API for Delilah Resto project.
+  version: 1.0.0
+  title: Delilah Resto
+
+  contact:
+    email: mjbrajkovic@gmail.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: admin
+  description: Secured Admin-only calls.
+- name: user
+  description: Operations available to regular users.
+
+paths:
+  /login:
+    post:
+      tags:
+      - admin
+      - user
+      summary: Users login
+      operationId: userLogin
+      description: Log into your account.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: loginRequest
+        description: Provide user and password to log in.
+        schema:
+          $ref: '#/definitions/userLogin'
+      responses:
+        201:
+          description: Successful login.
+        400:
+          description: Invalid input, incorrect user or password.
+      security:
+      - bearerAuth: []
+  /singup:
+    post:
+      tags:
+      - user
+      - admin
+      summary: Create a new user
+      operationId: createUser
+      description: Create a new account.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: user
+        description: New user information.
+        schema:
+          $ref: '#/definitions/createUser'
+      responses:
+        201:
+          description: Successful singup, user created.
+        400:
+          description: Invalid input.
+        409:
+          description: User already exists.
+      security:
+      - bearerAuth: []
+  /products:
+    get:
+      tags:
+      - admin
+      - user
+      summary: Searches all products
+      operationId: getProducts
+      description: Get a list of all the available products
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: Products successfully obtained.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/getProducts'
+        400:
+          description: An error has ocurred.
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - admin
+      summary: Post a new product
+      description: Add a new product to the products list
+      operationId: addNewProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: product
+        description: New product information
+        required: true
+        schema:
+          $ref: '#/definitions/addNewProduct'
+      responses:
+        "201":
+          description: New product successfully created
+        "400":
+          description: Bad request
+        "404":
+          description: An error has ocurred
+      security:
+      - bearerAuth: []
+  /products/{id}:
+    put:
+      tags:
+      - admin
+      summary: Update a product information
+      description: Update information about a product by passing the product id
+      operationId: postProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: Product id
+        required: true
+        type: integer
+      - in: body
+        name: product
+        description: Update product
+        required: false
+        schema:
+          $ref: '#/definitions/updateProduct'
+      responses:
+        "200":
+          description: Product successfully updated
+        "400":
+          description: Invalid input
+        "404":
+          description: An error has ocurred, product not found
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - admin
+      summary: Delete a product
+      description: Delete a product by providing the product id
+      operationId: deleteProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: Product id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Product successfully deleted
+        "400":
+          description: Invalid input
+        "404":
+          description: An error has ocurred, product not found
+      security:
+      - bearerAuth: []
+  /users:
+    get:
+      tags:
+      - admin
+      summary: Get all users
+      description: Get a list with all the users
+      operationId: getUsersList
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: List of users successfully gotten
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/getUsersList'
+        "403":
+          description: Forbidden access, must be admin
+      security:
+      - bearerAuth: []
+  /orders:
+    get:
+      tags:
+      - admin
+      summary: Get all orders
+      description: Get a list with all the orders
+      operationId: getOrderList
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: List of orders successfully gotten
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/getOrdersList'
+        "403":
+          description: Forbidden access, must be admin
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - user
+      - admin
+      summary: Create a new order
+      description: Create a new order
+      operationId: createOrder
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: order
+        description: New order information
+        required: true
+        schema:
+          $ref: '#/definitions/createOrder'
+      - name: userId
+        in: header
+        description: User id from token
+        required: true
+        type: integer
+      responses:
+        "201":
+          description: Order successfully placed
+        "400":
+          description: An error has ocurred
+      security:
+      - bearerAuth: []
+  /orders/{id}:
+    get:
+      tags:
+      - user
+      - admin
+      summary: Get information about an specific order
+      description: Get information about an order by providing the order id
+      operationId: getOrder
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: Order id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Order information successfully obtained
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/getOrder'
+        "404":
+          description: An error has ocurred, order not found
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - admin
+      summary: Update an order
+      description: Update an existing order by providing the order id
+      operationId: updateOrder
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: Order id
+        required: true
+        type: integer
+      - in: body
+        name: Status
+        description: Only admins can update the order status
+        required: true
+        schema:
+          $ref: '#/definitions/updateOrder'
+      responses:
+        "201":
+          description: Order updated
+        "400":
+          description: An error has ocurred
+        "404":
+          description: An error has ocurred, order not found
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - admin
+      summary: Delete an order
+      description: Delete an order by providing the order id
+      operationId: deleteOrder
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: Order id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Order successfully deleted
+        "404":
+          description: An error has ocurred, order not found
+      security:
+      - bearerAuth: []
+securityDefinitions:
+  bearerAuth:
+    description: Enter your bearer token in JWT.
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  userLogin:
+    type: object
+    required:
+    - user
+    - password
+    properties:
+      user:
+        type: string
+        example: janedoe1
+      password:
+        type: string
+        example: mySecurePassword1234
+  createUser:
+    type: object
+    required:
+    - username
+    - fullname
+    - email
+    - phone
+    - address
+    - password
+    properties:
+      username:
+        type: string
+        example: janedoe1
+      fullname:
+        type: string
+        example:  Jane Doe
+      email:
+        type: string
+        example: janedoe@gmail.com
+      phone:
+        type: integer
+        example: 005493412659827
+      address:
+        type: string
+        example: P. Sherman 42
+      password:
+        type: string
+        example: mySecurePassword1234
+  getProducts:
+    type: array
+    items:
+      $ref: '#/definitions/getProductsList_inner'
+  getOrder:
+    type: object
+    properties:
+      order_id:
+        type: integer
+        example: 1
+      status:
+        type: string
+        example: Preparando
+      paymentMethod:
+        type: string
+        example: Debido
+      totalAmount:
+        type: integer
+        example: 890
+      address:
+        type: string
+        example: P. Sherman 42
+      description:
+        type: string
+        example: 3 x Hamburger
+  createOrder:
+    type: object
+    required:
+      - paymentMethod
+      - productsList
+      - deliveryAddress
+    properties:
+      payment_id:
+        type: integer
+        example: 1
+      productsList:
+        type: object
+        properties:
+          product: 
+            type: array
+            example: [PIZZA, SOUP]
+            items:
+              type: string
+          quantity:
+            type: array
+            example: [2, 4]
+            items:
+              type: integer
+        items:
+          $ref: '#/definitions/createOrder_productsList'
+      deliveryAddress:
+        type: string
+        example: P. Sherman 42
+  getUsersList:
+    type: object
+    properties:
+      username:
+        type: string
+        example: janedoe1
+      fullname:
+        type: string
+        example:  Jane Doe
+      email:
+        type: string
+        example: janedoe@gmail.com
+      phone:
+        type: number
+        example: 3412659827
+      address:
+        type: string
+        example: P. Sherman 42
+      password:
+        type: string
+        example: mySecurePassword1234
+  getOrdersList:
+    type: array
+    items:
+      $ref: '#/definitions/getOrdersList_inner'
+  addNewProduct:
+    type: object
+    required:
+    - name
+    - price
+    properties:
+      name:
+        type: string
+        example: Soup
+      price:
+        type: integer
+        example: 180
+      description:
+        type: string
+        example: Chicken soup
+  updateProduct:
+    type: object
+    properties:
+      name:
+        type: string
+        example: Soup
+      price:
+        type: integer
+        example: 280
+      description:
+        type: string
+        example: Chicken soup
+  updateOrder:
+    type: object
+    required:
+    - orderId
+    - status_id
+    properties:
+      status_id:
+        type: integer
+        example: 1
+        items:
+          $ref: '#/definitions/createOrder_productsList'
+  getProductsList_inner:
+    type: object
+    properties:
+      name:
+        type: string
+        example: Hamburger
+      price:
+        type: integer
+        example: 500
+    example: '{"name":"Hamburger","price":500,"description":"Delicious cheeseburger"}'
+  createOrder_productsList:
+    type: object
+    properties:
+      name:
+        type: string
+      quantity:
+        type: integer
+  getOrdersList_inner:
+    type: object
+    properties:
+      status:
+        type: string
+        example: Nuevo
+      date:
+        type: string
+        format: date-time
+      order_id:
+        type: integer
+        example: 1
+      payment_method:
+        type: string
+        example: Efectivo
+      amount:
+        type: number
+        example: 500
+      fullname:
+        type: string
+        example: Jane Doe
+      address:
+        type: string
+        example: P. Sherman 42
+
+host: virtserver.swaggerhub.com
+basePath: /mariajbrajkovic/DelilahResto/1.0.0
+schemes:
+ - https
