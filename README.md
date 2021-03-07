@@ -12,19 +12,20 @@ Requirements for deploying this project:
 - Clone this repository in bash shell using: git clone https://github.com/mariajbrajkovic/Delilah-Resto
 - Install all dependences with: npm install
 - Run the server: npm run main.js
-- Set: 
+- Set:
+
 DBHOST = database host
   
-DBPORT = <database port>
+DBPORT = database port
   
-DBNAME = <database name>
+DBNAME = database name
   
-DBUSER = <database user name>
+DBUSER = database user name
   
-DBPASS = <database user password>
+DBPASS = database user password
   
-DBDIALECT = <database dialect>
+DBDIALECT = database dialect
   
-JWTFIRM = <database JWT firm>
+JWTFIRM = database JWT firm
   
 - Run in mysql workbench the /database.sql before using the app
