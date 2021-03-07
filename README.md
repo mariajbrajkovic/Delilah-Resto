@@ -14,10 +14,17 @@ Requirements for deploying this project:
 - Run the server: npm run main.js
 - Set: 
 DBHOST = <database host>
+  
 DBPORT = <database port>
+  
 DBNAME = <database name>
+  
 DBUSER = <database user name>
+  
 DBPASS = <database user password>
+  
 DBDIALECT = <database dialect>
+  
 JWTFIRM = <database JWT firm>
+  
 - Run in mysql workbench the /database.sql before using the app
