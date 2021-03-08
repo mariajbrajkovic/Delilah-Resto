@@ -44,7 +44,7 @@ CREATE TABLE `orders` (
     `payment_id` INT(10) NOT NULL,
     `user_id` INT(10) NOT NULL,
     `delivery_address` VARCHAR(64) NOT NULL,
-    `amount` INT(10) NOT NULL
+    `amount` INT(10) NOT NULL DEFAULT '0'
 );
 
 -- Estructura de tabla para la tabla `payment_method`
