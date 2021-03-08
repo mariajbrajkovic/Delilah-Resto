@@ -41,7 +41,7 @@ async function  validateUserAndPassword(user, req, res) {
         type: QueryTypes.SELECT,
         replacements: user
     })
-    if (validation === null) {
+    if (validation.lenght === 0) {
         return res.status(400).send('Error 404. User not found.')
     } else {
         const token = jwt.sign(validation[0], firm)
